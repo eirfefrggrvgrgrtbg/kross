@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -42,19 +41,11 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<void> seedInitialData() async {
-    final count = await (select(movies)..limit(1)).get();
-    if (count.isEmpty) {
+    // Проверяем количество фильмов - если меньше 30, пересоздаём
+    final count = await select(movies).get();
+    if (count.length < 30) {
+      await delete(movies).go();
       for (final movie in mockMovies) {
-        Uint8List? posterBytes;
-        if (movie.posterAssetPath != null) {
-          try {
-            final byteData = await rootBundle.load(movie.posterAssetPath!);
-            posterBytes = byteData.buffer.asUint8List();
-          } catch (e) {
-            posterBytes = null;
-          }
-        }
-
         await into(movies).insert(
           MoviesCompanion.insert(
             title: movie.title,
@@ -63,11 +54,29 @@ class AppDatabase extends _$AppDatabase {
             durationMinutes: movie.durationMinutes,
             rating: movie.rating,
             description: movie.description,
-            poster: Value(posterBytes),
-            posterAssetPath: Value(movie.posterAssetPath),
+            poster: const Value(null),
+            posterAssetPath: Value(movie.posterUrl), // Храним URL в posterAssetPath
           ),
         );
       }
+    }
+  }
+  
+  Future<void> resetAndSeed() async {
+    await delete(movies).go();
+    for (final movie in mockMovies) {
+      await into(movies).insert(
+        MoviesCompanion.insert(
+          title: movie.title,
+          year: movie.year,
+          genre: movie.genre,
+          durationMinutes: movie.durationMinutes,
+          rating: movie.rating,
+          description: movie.description,
+          poster: const Value(null),
+          posterAssetPath: Value(movie.posterUrl),
+        ),
+      );
     }
   }
 }
@@ -75,7 +84,7 @@ class AppDatabase extends _$AppDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'cineonline.sqlite'));
+    final file = File(p.join(dbFolder.path, 'cineonline_v2.sqlite')); // Новое имя файла БД
     return NativeDatabase.createInBackground(file);
   });
 }
@@ -91,7 +100,7 @@ extension MovieEntryExtension on Movy {
       rating: rating,
       description: description,
       poster: poster,
-      posterAssetPath: posterAssetPath,
+      posterUrl: posterAssetPath, // URL хранится в posterAssetPath
     );
   }
 }

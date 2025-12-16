@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/movie.dart';
+import 'movie_poster.dart';
 
 class MovieMiniPoster extends StatelessWidget {
   final Movie movie;
@@ -22,20 +23,10 @@ class MovieMiniPoster extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: ClipRRect(
+              child: MoviePoster(
+                movie: movie,
+                width: 100,
                 borderRadius: BorderRadius.circular(12),
-                child: movie.poster != null
-                    ? Image.memory(
-                        movie.poster!,
-                        fit: BoxFit.cover,
-                        width: 100,
-                      )
-                    : Container(
-                        color: Colors.grey[300],
-                        child: const Center(
-                          child: Icon(Icons.movie, color: Colors.grey),
-                        ),
-                      ),
               ),
             ),
             const SizedBox(height: 4),
@@ -52,4 +43,3 @@ class MovieMiniPoster extends StatelessWidget {
     );
   }
 }
-

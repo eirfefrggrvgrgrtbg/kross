@@ -118,9 +118,9 @@ class AppValidators {
     }
     final hasLetters = RegExp(r'[a-zA-Zа-яА-ЯёЁ]').hasMatch(value);
     final hasDigits = RegExp(r'\d').hasMatch(value);
-    final hasSpecial = RegExp(r'[_\-!@#$%^&*(),.?":{}|<>]').hasMatch(value);
+    final hasSpecial = RegExp(r'[+_-]').hasMatch(value);
     if (!hasLetters || !hasDigits || !hasSpecial) {
-      return 'Пароль должен содержать буквы, цифры и символы (_-)';
+      return 'Пароль должен содержать буквы, цифры и символы (+_-)';
     }
     return null;
   }
@@ -138,4 +138,3 @@ class AppValidators {
     };
   }
 }
-

@@ -11,6 +11,7 @@ class Movie extends Equatable {
   final String description;
   final Uint8List? poster;
   final String? posterAssetPath;
+  final String? posterUrl;
 
   const Movie({
     required this.id,
@@ -22,6 +23,7 @@ class Movie extends Equatable {
     required this.description,
     this.poster,
     this.posterAssetPath,
+    this.posterUrl,
   });
 
   Movie copyWith({
@@ -34,6 +36,7 @@ class Movie extends Equatable {
     String? description,
     Uint8List? poster,
     String? posterAssetPath,
+    String? posterUrl,
   }) {
     return Movie(
       id: id ?? this.id,
@@ -45,6 +48,7 @@ class Movie extends Equatable {
       description: description ?? this.description,
       poster: poster ?? this.poster,
       posterAssetPath: posterAssetPath ?? this.posterAssetPath,
+      posterUrl: posterUrl ?? this.posterUrl,
     );
   }
 
@@ -59,6 +63,7 @@ class Movie extends Equatable {
         description,
         poster,
         posterAssetPath,
+        posterUrl,
       ];
 }
 

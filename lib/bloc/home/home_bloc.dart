@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../data/app_database.dart';
 import '../../data/movies_repository.dart';
+import '../../di/injection.dart';
 import 'home_event.dart';
 import 'home_state.dart';
 
@@ -17,7 +19,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onLoadMovies(LoadMovies event, Emitter<HomeState> emit) async {
     emit(const HomeLoading());
     try {
-      await _moviesRepository.seedInitialData();
+      // Пересоздаём БД для загрузки новых данных с постерами
+      await getIt<AppDatabase>().resetAndSeed();
       final movies = await _moviesRepository.getAllMovies();
       emit(HomeLoaded(movies));
     } catch (e) {

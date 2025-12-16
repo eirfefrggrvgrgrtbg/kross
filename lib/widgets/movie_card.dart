@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../models/movie.dart';
+import 'movie_poster.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
   final VoidCallback? onTap;
+  final VoidCallback? onFavoriteToggle;
+  final bool isFavorite;
 
   const MovieCard({
     super.key,
     required this.movie,
     this.onTap,
+    this.onFavoriteToggle,
+    this.isFavorite = false,
   });
 
   @override
@@ -27,22 +32,9 @@ class MovieCard extends StatelessWidget {
           children: [
             Expanded(
               flex: 3,
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
-                color: Colors.grey[300],
-                child: movie.poster != null
-                    ? Image.memory(
-                        movie.poster!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      )
-                    : const Center(
-                        child: Icon(
-                          Icons.movie,
-                          size: 48,
-                          color: Colors.grey,
-                        ),
-                      ),
+                child: MoviePoster(movie: movie),
               ),
             ),
             Expanded(
@@ -51,25 +43,30 @@ class MovieCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      movie.title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Flexible(
+                      child: Text(
+                        movie.title,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${movie.year} • ${movie.genre}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    const SizedBox(height: 2),
+                    Flexible(
+                      child: Text(
+                        '${movie.year} • ${movie.genre}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey[600],
+                            ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    const SizedBox(height: 4),
+                    const Spacer(),
                     Row(
                       children: [
                         const Icon(Icons.star, size: 16, color: Colors.amber),
@@ -83,6 +80,20 @@ class MovieCard extends StatelessWidget {
                           '${movie.durationMinutes} мин',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
+                        if (onFavoriteToggle != null)
+                          GestureDetector(
+                            onTap: onFavoriteToggle,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Icon(
+                                isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                size: 20,
+                                color: isFavorite ? Colors.red : Colors.grey,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ],
@@ -95,4 +106,3 @@ class MovieCard extends StatelessWidget {
     );
   }
 }
-

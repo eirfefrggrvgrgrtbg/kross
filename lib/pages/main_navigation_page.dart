@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
+import 'my_collection_page.dart';
 import 'profile_page.dart';
 import 'settings_page.dart';
 
@@ -16,6 +17,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   final List<Widget> _pages = const [
     HomePage(),
+    MyCollectionPage(),
     ProfilePage(),
     SettingsPage(),
   ];
@@ -39,6 +41,11 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Главная',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.collections_bookmark_outlined),
+            selectedIcon: Icon(Icons.collections_bookmark),
+            label: 'Коллекция',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outlined),
